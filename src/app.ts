@@ -4,11 +4,12 @@ import 'express-async-errors';
 import express from 'express';
 import cors from 'cors';
 
-import './database';
+import createConnection from './database';
 import './shared/container';
 import { router } from './routes';
 import { AppError } from './shared/errors/AppError';
 
+createConnection();
 const app = express();
 
 app.use(cors());
@@ -18,6 +19,7 @@ app.use('/api/v1', router);
 
 app.use(
   (err: Error, request: express.Request, response: express.Response, _next: express.NextFunction) => {
+    console.log(err);
     if (err instanceof AppError) {
       return response.status(err.statusCode).json({
         message: err.message
